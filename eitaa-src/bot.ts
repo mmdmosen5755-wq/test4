@@ -322,7 +322,7 @@ async function onCallback(c: Ctx, q: TgCallback): Promise<void> {
       const u = await getUser(env, uid);
       if (!u?.eitaa_token_enc) return void (await tg.send(env, uid, "ابتدا از «برنامه‌های متصل» توکن ایتایار را ثبت کنید."));
       try { await eitaa.sendMessage(env, await dec(env.SECRET_KEY, u.eitaa_token_enc), ch.chat_id, "✅ آزمایش اتصال ربات؛ این پیام را می‌توانید حذف کنید."); return void (await tg.send(env, uid, `✅ اتصال به «${esc(ch.title)}» درست است؛ یک پیام آزمایشی در کانال فرستاده شد.`)); }
-      catch (e) { return void (await tg.send(env, uid, `❌ ارسال آزمایشی به «${esc(ch.title)}» ناموفق بود:\n${esc((e as Error).message)}`, ikb([[["✏️ تغییر شناسه", `ch:id:${ch.id}`]]]))); }
+      catch (e) { return void (await tg.send(env, uid, `❌ ارسال آزمایشی به «${esc(ch.title)}» ناموفق بود:\n${esc((e as Error).message)}\n\n🆔 شناسه‌ی ارسال‌شده: <code>${esc(ch.chat_id)}</code>`, ikb([[["✏️ تغییر شناسه", `ch:id:${ch.id}`]]]))); }
     }
     if (act === "id") { await setSession(env, uid, "chan_chid", { channel_id: ch.id }); return void (await tg.send(env, uid, "شناسه‌ی درست کانال را بفرستید (عدد شناسه یا نام کاربری بدون @، مطابق پنل ایتایار):")); }
     if (act === "rn") { await setSession(env, uid, "chan_rename", { channel_id: ch.id }); return void (await tg.send(env, uid, "نام جدید را بفرستید:")); }

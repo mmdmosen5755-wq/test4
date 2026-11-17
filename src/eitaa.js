@@ -2786,7 +2786,9 @@ async function deliver(env, postId, quiet = false) {
     await env.DB.prepare("UPDATE ea_posts SET status='failed', error=? WHERE id=?").bind(msg.slice(0, 300), p.id).run();
     await markGroup(env, p.id, "\u274C \u0646\u0627\u0645\u0648\u0641\u0642");
     if (!quiet) await send(env, p.user_id, `\u274C \u0627\u0631\u0633\u0627\u0644 \u067E\u0633\u062A #${p.id} \u0646\u0627\u0645\u0648\u0641\u0642 \u0628\u0648\u062F:
-${esc(msg)}`, { inline_keyboard: [[{ text: "\u{1F501} \u0627\u0631\u0633\u0627\u0644 \u0645\u062C\u062F\u062F", callback_data: `sp:rt:${p.id}` }], ...p.channel_id ? [[{ text: "\u{1F9EA} \u0622\u0632\u0645\u0627\u06CC\u0634/\u062A\u063A\u06CC\u06CC\u0631 \u0634\u0646\u0627\u0633\u0647\u200C\u06CC \u06A9\u0627\u0646\u0627\u0644", callback_data: `ch:v:${p.channel_id}` }]] : []] });
+${esc(msg)}${ch ? `
+
+\u{1F194} \u0634\u0646\u0627\u0633\u0647\u200C\u06CC \u06A9\u0627\u0646\u0627\u0644\u0650 \u0627\u0631\u0633\u0627\u0644\u200C\u0634\u062F\u0647: <code>${esc(ch.chat_id)}</code>` : ""}`, { inline_keyboard: [[{ text: "\u{1F501} \u0627\u0631\u0633\u0627\u0644 \u0645\u062C\u062F\u062F", callback_data: `sp:rt:${p.id}` }], ...p.channel_id ? [[{ text: "\u{1F9EA} \u0622\u0632\u0645\u0627\u06CC\u0634/\u062A\u063A\u06CC\u06CC\u0631 \u0634\u0646\u0627\u0633\u0647\u200C\u06CC \u06A9\u0627\u0646\u0627\u0644", callback_data: `ch:v:${p.channel_id}` }]] : []] });
   };
   if (!user || !ch) return fail("\u06A9\u0627\u0631\u0628\u0631 \u06CC\u0627 \u06A9\u0627\u0646\u0627\u0644 \u062F\u06CC\u06AF\u0631 \u0648\u062C\u0648\u062F \u0646\u062F\u0627\u0631\u062F.");
   const token = await dec(env.SECRET_KEY, user.eitaa_token_enc);
@@ -3370,7 +3372,9 @@ async function onCallback3(c, q) {
         return void await send(env, uid, `\u2705 \u0627\u062A\u0635\u0627\u0644 \u0628\u0647 \xAB${esc(ch.title)}\xBB \u062F\u0631\u0633\u062A \u0627\u0633\u062A\u061B \u06CC\u06A9 \u067E\u06CC\u0627\u0645 \u0622\u0632\u0645\u0627\u06CC\u0634\u06CC \u062F\u0631 \u06A9\u0627\u0646\u0627\u0644 \u0641\u0631\u0633\u062A\u0627\u062F\u0647 \u0634\u062F.`);
       } catch (e) {
         return void await send(env, uid, `\u274C \u0627\u0631\u0633\u0627\u0644 \u0622\u0632\u0645\u0627\u06CC\u0634\u06CC \u0628\u0647 \xAB${esc(ch.title)}\xBB \u0646\u0627\u0645\u0648\u0641\u0642 \u0628\u0648\u062F:
-${esc(e.message)}`, ikb([[["\u270F\uFE0F \u062A\u063A\u06CC\u06CC\u0631 \u0634\u0646\u0627\u0633\u0647", `ch:id:${ch.id}`]]]));
+${esc(e.message)}
+
+\u{1F194} \u0634\u0646\u0627\u0633\u0647\u200C\u06CC \u0627\u0631\u0633\u0627\u0644\u200C\u0634\u062F\u0647: <code>${esc(ch.chat_id)}</code>`, ikb([[["\u270F\uFE0F \u062A\u063A\u06CC\u06CC\u0631 \u0634\u0646\u0627\u0633\u0647", `ch:id:${ch.id}`]]]));
       }
     }
     if (act2 === "id") {

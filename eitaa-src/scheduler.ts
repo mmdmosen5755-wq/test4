@@ -125,7 +125,7 @@ export async function deliver(env: Env, postId: number, quiet = false): Promise<
   const fail = async (msg: string) => {
     await env.DB.prepare("UPDATE ea_posts SET status='failed', error=? WHERE id=?").bind(msg.slice(0, 300), p.id).run();
     await markGroup(env, p.id, "❌ ناموفق");
-    if (!quiet) await tg.send(env, p.user_id, `❌ ارسال پست #${p.id} ناموفق بود:\n${esc(msg)}`, { inline_keyboard: [[{ text: "🔁 ارسال مجدد", callback_data: `sp:rt:${p.id}` }], ...(p.channel_id ? [[{ text: "🧪 آزمایش/تغییر شناسه‌ی کانال", callback_data: `ch:v:${p.channel_id}` }]] : [])] });
+    if (!quiet) await tg.send(env, p.user_id, `❌ ارسال پست #${p.id} ناموفق بود:\n${esc(msg)}${ch ? `\n\n🆔 شناسه‌ی کانالِ ارسال‌شده: <code>${esc(ch.chat_id)}</code>` : ""}`, { inline_keyboard: [[{ text: "🔁 ارسال مجدد", callback_data: `sp:rt:${p.id}` }], ...(p.channel_id ? [[{ text: "🧪 آزمایش/تغییر شناسه‌ی کانال", callback_data: `ch:v:${p.channel_id}` }]] : [])] });
   };
   if (!user || !ch) return fail("کاربر یا کانال دیگر وجود ندارد.");
   const token = await dec(env.SECRET_KEY, user.eitaa_token_enc);
